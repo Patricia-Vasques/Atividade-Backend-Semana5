@@ -220,4 +220,33 @@ static removerItem(req, res) {
       return res.status(500).send('Erro ao remover o item');
     }
 }
+
+/**Exercício 8 - Utilizando o JSON fornecido no roteiro do exercício, crie um método GET que ao receber um ID no params 
+ * retorna o nome do usuário cadastrado. Se o ID não está disponível na lista, apresente o código http apropriado. */
+
+static nomeUsuario(req, res) {
+    try {
+        const { id } = req.params;
+
+        //Ler dados do arquivo JSON
+        const filePath = path.join(__dirname, '/user.json');
+        const fileContent = fs.readFileSync(filePath, 'utf-8');
+        const dados = JSON.parse(fileContent);
+    
+        // Procurar o usuário com o ID fornecido
+        const usuario = dados.find((item) => item.id === id);
+    
+        // Verificar se o usuário foi encontrado
+        if (!usuario) {
+          return res.status(404).send(`Usuário com o ID ${id} não encontrado`);
+        }
+
+        // Retornar o nome do usuário
+        const { nome } = usuario;
+        return res.status(200).json({ nome });
+     }     catch (error) {
+        console.error('Erro ao obter o nome do usuário:', error);
+        return res.status(500).send('Erro ao obter o nome do usuário');
+    }
+    }
 }
