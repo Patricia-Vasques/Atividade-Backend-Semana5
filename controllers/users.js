@@ -2,6 +2,7 @@ const express = require("express");
 const app = express();
 const fs = require('fs');
 const path = require ('path');
+const { fileURLToPath } = require("url");
 
 
 
@@ -119,7 +120,7 @@ module.exports = class UsersController {
         const { ageMin, ageMax, state, job } = req.query;
 
         //Ler dados do arquivo user.json
-        const filePath = path.join(__dirname, "../database/user.json");
+        const filePath = path.join(__dirname, "../database/dados.json");
         const fileContent = fs.readFileSync(filePath, 'utf-8');
         const users = JSON.parse(fileContent);
 
@@ -135,4 +136,48 @@ module.exports = class UsersController {
         //Retornando os usuários filtrados como resposta
         return res.status(200).json(filteredUsers);
     }
+
+    /**Exercício 6 - Criar um endpoint PUT (atualiza todos os campos de uma vez) para alterar o arquivo JSON */
+
+    static alterarDados (req, res) {
+        try{
+            const { id } = req.params;
+            const novosValores = req.body;
+
+            //Definir o caminho para o arquivo de dados JSON
+            const filePath = path.join(__dirname, './user.json');
+
+            //Lendo o conteúdo atual do arquivo JSON
+            let dadosJson = [];
+            if(fs.existsSync(filePath)) {
+                const fileContent = fs.readFileSync(filePath, 'utf-8');
+                dadosJson = JSON.parse(fileContent);
+            }
+        
+        //Encontrando o índice do item com o ID fornecido
+        const indiceItem = dadosJson.findIndex(item => item.id === id);
+
+        //Verificando se o item com ID existe
+        if(indiceItem === -1) {
+            return res.status(400).send(`Item com o ID ${id} não existe`);
+        }
+
+        //Obtendo os valores atuais do item
+        const valoresAtuais = dados[indiceItem];
+        
+        //Verificando se os valores atuais são diferentes dos já existentes
+        if(JSON.stringify(valoresAtuais) === JSON.stringify(novosValores)) {
+            return res.status(200).send('Não há alterações a serem feitas');
+        }
+
+        dadosJson[indiceItem] = { id, ...novosValores };
+
+        //salvando o array atualizado no arquivo
+        fs.writeFileSync(filePath, JSON.stringify(dadosJson));
+        return res.status(200).send(dadosJson);
+    } catch (error) {
+        console.error('Erro ao alterar os dados:', error);
+        return res.status(500).send ('Erro ao alterar os dados');
+    }
+}
 }
