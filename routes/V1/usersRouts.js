@@ -4,5 +4,5 @@ const UsersController = require('../../controllers/users')
 
 usersRoutesV1.patch('/list/:name', UsersController.retorneUsers);
 usersRoutesV1.get('/list/:mes', UsersController.listarDatas)
-
+usersRoutesV1.post('/list', UsersController.salvarData)
 module.exports = usersRoutesV1

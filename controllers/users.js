@@ -1,12 +1,16 @@
 const express = require("express");
-
 const app = express();
+const fs = require('fs');
+const path = require ('path');
 
 
 app.use(express.json());
 
 module.exports = class UsersController {
-    //Exercício 2 - Criando o método PATCH (atualiza alguns campos juntos de uma vez)
+    /**
+     * Exercício 2 - Criando o método PATCH (atualiza alguns campos juntos de uma vez), para receber uma lista de strings, e
+     * retorne a resposta da aquisição dada no exercício
+     */
 
     static async retorneUsers(req, res){
         let lista  = ['Pedro', 'José', 'Aderbal', 'Danilo', 'Luisa', 'Vitoria']
@@ -73,5 +77,36 @@ module.exports = class UsersController {
 
         //Retorna a lista de datas como resposta
         return res.status(200).send(datas);
+    }
+
+    /**
+     * Exercício 4 - Criar um endpoint POST(criar novas informações) para enviar um JSON qualquer e 
+     * salvar em um arquivo utilizando FileSystem, se o arquivo já existir, criar o novo dado na sequência
+     */
+
+    static salvarData(req, res) {
+        try{
+            const { item } = req.body;
+
+            //Definindo o caminho para o arquivo de dado JSON
+            const filePath = path.join(__dirname, 'dados.json');
+
+            //Lendo o conteúdo atual, se ele for existente
+            let dados = [];
+            if (fs.existsSync(filePath)) {
+                const fileContent = fs.readFileSync (filePath, 'utf-8')
+                dados = JSON.parse(fileContent);
+            }
+
+            //Adicioana o novo item ao array de dados
+            dados.push({ item });
+
+            //Salva o array atualizado no arquivo
+            fs.writeFileSync(filePath, JSON.stringify(dados));
+            return res.status(200).send(dados);
+        } catch (error) {
+            console.error('Erro ao salvar os dados:', error);
+            return res.status(500).send ('Erro ao salvar dados');
+        }
     }
 }
