@@ -7,5 +7,6 @@ usersRoutesV1.get('/list/:mes', UsersController.listarDatas);
 usersRoutesV1.post('/list', UsersController.salvarData);
 usersRoutesV1.get('/users/', UsersController.filtrarDados);
 usersRoutesV1.put('/dados/:id', UsersController.alterarDados);
+usersRoutesV1.delete('/dados/:id', UsersController.removerItem);
 
 module.exports = usersRoutesV1
