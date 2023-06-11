@@ -4,6 +4,7 @@ const fs = require('fs');
 const path = require ('path');
 
 
+
 app.use(express.json());
 
 module.exports = class UsersController {
@@ -108,5 +109,30 @@ module.exports = class UsersController {
             console.error('Erro ao salvar os dados:', error);
             return res.status(500).send ('Erro ao salvar dados');
         }
+    }
+
+    /** Exercício 5 - Utilizando o arquivo user.json fornecido, criar um endpoint GET que deverá
+     * retornar s dados de acordo com o filtro aplicado na Query da requisição
+    */
+
+    static filtrarDados (req, res) {
+        const { ageMin, ageMax, state, job } = req.query;
+
+        //Ler dados do arquivo user.json
+        const filePath = path.join(__dirname, "../database/user.json");
+        const fileContent = fs.readFileSync(filePath, 'utf-8');
+        const users = JSON.parse(fileContent);
+
+        //Usando os critérios para filtrar os usuários
+        const filteredUsers = users.filter(user => {
+            const isAgeInRange = (ageMin && user.age >= ageMin) || (ageMax && user.age <= ageMax);
+            const isStateMatched = state ? user.state.toLowerCase() === state.toLowerCase() : true;
+            const isJobMatched = job ? user.job.toLowerCase() === job.toLowerCase() : true;
+
+            return isAgeInRange && isStateMatched && isJobMatched;
+        });
+
+        //Retornando os usuários filtrados como resposta
+        return res.status(200).json(filteredUsers);
     }
 }
