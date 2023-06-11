@@ -37,4 +37,41 @@ module.exports = class UsersController {
         //retonar uma resposta HTTP com status 200 e envia a lista como resposta
         return res.status(200).send(lista)
     }
-}}
+}
+
+// Exercício 3 - criando o endpoint GET (faz listagem de dados), para listar datas a partir de um mês informado
+    static listarDatas(req, res) {
+        //Extrair o valor do parâmetro de mês e atribuir em uma variável chamada mes
+        const { mes } = req.params;
+
+        //Verificando se o mês está entre 1 a 12 para ser válido
+        if(mes < 1 || mes > 12 ){
+            return res.status(400).send(`O mês ${mes} não existe`)
+        }
+
+        // Criar um objeto de data com o mês e ano atual
+        const atualData = new Date();
+        const atualAno = atualData.getFullYear();
+
+        //Define o mês e o ano com base nos parâmetros fornecidos
+        const dataSelecionada = new Date(atualAno, mes -1);
+
+        //Verifica se o mês é válido (aqui considera possíveis datas que não existem como por exemplo 30 de fevereiro)
+        if (dataSelecionada.getMonth() !== parseInt(mes) - 1) {
+            return res.status(400).send(`O mês ${mes} não existe`);
+        }
+
+        //Criar um array para armazenar as datas do mês
+        const datas = [];
+
+        //Loop para criar as datas do mês
+        while (dataSelecionada.getMonth() === parseInt(mes) - 1) {
+            const formatoData = `${dataSelecionada.getDate()}/${parseInt(mes)}/${atualAno}`;
+            datas.push(formatoData);
+            dataSelecionada.setDate(dataSelecionada.getDate() + 1);
+        }
+
+        //Retorna a lista de datas como resposta
+        return res.status(200).send(datas);
+    }
+}
