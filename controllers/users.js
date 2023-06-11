@@ -1,13 +1,12 @@
 const express = require("express");
-const fs = require("fs");
-const { move } = require("../routes");
+
 const app = express();
 
 
 app.use(express.json());
 
-module.exports = class UserController {
-    //Exercício 2 - Criando o método PATCH
+module.exports = class UsersController {
+    //Exercício 2 - Criando o método PATCH (atualiza alguns campos juntos de uma vez)
 
     static async retorneUsers(req, res){
         let lista  = ['Pedro', 'José', 'Aderbal', 'Danilo', 'Luisa', 'Vitoria']
@@ -22,12 +21,12 @@ module.exports = class UserController {
         }
 
         //Verificar se o nome está na posição 0, ou seja, se é o primeiro da lista
-        if(lista.index0f(moverNome) === 0){
+        if(lista.indexOf(moverNome) === 0){
             //Se estiver na primeira posição retorna uma resposta Ok e envia a lista completa
             return res.status(200).send(lista);
         } else{
             //salva a posição do nome na lista em uma variável
-            let posicao = lista.index0f(moverNome);
+            let posicao = lista.indexOf(moverNome);
 
         //remove o elemento da lista que está na posição indicada pela variável chamada "posicao"
         lista.splice(posicao, 1);
