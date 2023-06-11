@@ -249,4 +249,38 @@ static nomeUsuario(req, res) {
         return res.status(500).send('Erro ao obter o nome do usuário');
     }
     }
+
+    /**Exercício 9 - Crie um método POST que através de validação, deverá aceitar apenas strings em seu 'body'. No endpoint, 
+     * crie um método para converter as letras minúsculas em maiúsculas, e vice-versa. 
+     */
+
+    static converterString(req, res) {
+        try {
+          const { body } = req;
+          
+          // Verifica se o body é uma string
+          if (typeof body !== 'string') {
+            return res.status(400).send('O corpo da requisição deve ser uma string');
+          }
+      
+          let convertedString;
+      
+          // Verifica se o body contém apenas letras maiúsculas
+          if (body === body.toUpperCase()) {
+            // Converte para minúsculas
+            convertedString = body.toLowerCase();
+          } else if (body === body.toLowerCase()) {
+            // Converte para maiúsculas
+            convertedString = body.toUpperCase();
+          } else {
+            // Caso o body contenha uma mistura de letras maiúsculas e minúsculas, retorna um erro
+            return res.status(400).send('A string deve conter apenas letras maiúsculas ou minúsculas');
+          }
+      
+          return res.status(200).send(convertedString);
+        } catch (error) {
+          console.error('Erro ao converter a string:', error);
+          return res.status(500).send('Erro ao converter a string');
+        }
+      }
 }
